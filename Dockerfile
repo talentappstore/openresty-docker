@@ -22,7 +22,9 @@ RUN sudo apt-get update && \
     cd .. && \
     rm -r openresty-${OPENRESTY_VERSION} && \
     rm -r openssl-${OPENSSL_VERSION} && \
-    sudo mkdir -p /srv/nginx/logs
+    sudo mkdir -p /srv/nginx/logs && \
+    ln -sf /dev/stdout /srv/nginx/logs/access.log && \
+    ln -sf /dev/stderr /srv/nginx/logs/error.log
 
 WORKDIR /srv
 
