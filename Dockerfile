@@ -1,10 +1,12 @@
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 
 ENV OPENRESTY_VERSION 1.9.7.4
-ENV OPENSSL_VERSION 1.0.2g
 
-RUN sudo apt-get update && \
-    sudo apt-get -y install \
+COPY openresty.asc openresty.asc
+
+RUN apt-get update && \
+    apt-get -y --no-install-recommends install \
+        ca-certificates \
         curl \
         libreadline-dev \
         libncurses5-dev \
@@ -12,27 +14,37 @@ RUN sudo apt-get update && \
         perl \
         make \
         zlib1g-dev \
+        libssl-dev \
         build-essential && \
-    curl https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz | tar -xz && \
-    curl https://openresty.org/download/openresty-${OPENRESTY_VERSION}.tar.gz | tar -xz && \
+    curl -O https://openresty.org/download/openresty-${OPENRESTY_VERSION}.tar.gz && \
+    curl -O https://openresty.org/download/openresty-${OPENRESTY_VERSION}.tar.gz.asc && \
+    gpg --keyserver keys.gnupg.net --recv-key A0E98066 && \
+    gpg --verify openresty-${OPENRESTY_VERSION}.tar.gz.asc openresty-${OPENRESTY_VERSION}.tar.gz && \
+    ls && \
+    tar -xvzf openresty-${OPENRESTY_VERSION}.tar.gz && \
     cd openresty-${OPENRESTY_VERSION} && \
-    ./configure --with-openssl=/openssl-${OPENSSL_VERSION} && \
+    ./configure \
+        --with-pcre-jit \
+        --without-http_memcached_module \
+        --without-http_uwsgi_module \ 
+        --without-http_scgi_module \
+        --without-http_ssi_module \
+        --without-http_auth_basic_module && \
     make && \
-    sudo make install && \
+    make install && \
     cd .. && \
-    rm -r openresty-${OPENRESTY_VERSION} && \
-    rm -r openssl-${OPENSSL_VERSION} && \
-    sudo mkdir -p /srv/nginx/logs && \
+    rm -r openresty-${OPENRESTY_VERSION}* && \
+    mkdir -p /srv/nginx/logs && \
     ln -s /usr/local/openresty/nginx/sbin/nginx /usr/local/bin && \
     ln -sf /dev/stdout /srv/nginx/logs/access.log && \
     ln -sf /dev/stderr /srv/nginx/logs/error.log
 
 WORKDIR /srv
 
-VOLUME ["/srv/nginx/conf", "/srv/nginx/logs", "/srv/nginx/lua"]
-
 COPY start-nginx.sh start-nginx.sh
 COPY generate-dhparam.sh generate-dhparam.sh
+
+VOLUME ["/srv/nginx/conf", "/srv/nginx/lua"]
 
 EXPOSE 80 443
 
