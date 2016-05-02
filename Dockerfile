@@ -23,6 +23,7 @@ RUN sudo apt-get update && \
     rm -r openresty-${OPENRESTY_VERSION} && \
     rm -r openssl-${OPENSSL_VERSION} && \
     sudo mkdir -p /srv/nginx/logs && \
+    ln -s /usr/local/openresty/nginx/sbin/nginx /usr/local/bin && \
     ln -sf /dev/stdout /srv/nginx/logs/access.log && \
     ln -sf /dev/stderr /srv/nginx/logs/error.log
 
@@ -31,6 +32,7 @@ WORKDIR /srv
 VOLUME ["/srv/nginx/conf", "/srv/nginx/logs", "/srv/nginx/lua"]
 
 COPY start-nginx.sh start-nginx.sh
+COPY generate-dhparam.sh generate-dhparam.sh
 
 EXPOSE 80 443
 
