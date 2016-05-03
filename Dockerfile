@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:xenial-20160422
 
 ENV OPENRESTY_VERSION 1.9.7.4
 
