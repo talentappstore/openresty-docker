@@ -1,6 +1,6 @@
-FROM ubuntu:xenial-20160422
+FROM ubuntu:xenial-20160629
 
-ENV OPENRESTY_VERSION 1.9.7.4
+ENV OPENRESTY_VERSION 1.9.15.1
 
 COPY openresty.asc openresty.asc
 
