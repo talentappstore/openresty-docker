@@ -1,8 +1,6 @@
-FROM ubuntu:xenial-20160629
+FROM ubuntu:xenial-20160923.1
 
-ENV OPENRESTY_VERSION 1.9.15.1
-
-COPY openresty.asc openresty.asc
+ENV OPENRESTY_VERSION 1.11.2.1
 
 RUN apt-get update && \
     apt-get -y --no-install-recommends install \
@@ -20,7 +18,6 @@ RUN apt-get update && \
     curl -O https://openresty.org/download/openresty-${OPENRESTY_VERSION}.tar.gz.asc && \
     gpg --keyserver keys.gnupg.net --recv-key A0E98066 && \
     gpg --verify openresty-${OPENRESTY_VERSION}.tar.gz.asc openresty-${OPENRESTY_VERSION}.tar.gz && \
-    ls && \
     tar -xvzf openresty-${OPENRESTY_VERSION}.tar.gz && \
     cd openresty-${OPENRESTY_VERSION} && \
     ./configure \
