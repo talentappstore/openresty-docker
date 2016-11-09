@@ -23,6 +23,13 @@ In addition, the bash file `generate-dhparam.sh` is included to generate a 4096 
 
     RUN ./generate-dhparam.sh
 
+## Debugging
+
+The docker image also contains the [stapxx](https://github.com/openresty/stapxx) and [FlameGraph](https://github.com/bredangregg/FlameGraph) projects. Example usage (could be improved):
+
+    docker run -it -v /lib/modules:/lib/modules -v /usr/src/linux-headers-4.4.0-45-generic:/usr/src/linux-headers-4.4.0-45-generic -v /sys/kernel/debug:/sys/kernel/debug -v /usr/src/linux-headers-4.4.0-45:/usr/src/linux-headers-4.4.0-45 --privileged --pid=host --name otest21 talentappstore/openresty bash
+    ps aux | grep nginx # find the worker process id
+    lj-lua-stacks.xss -x 3124 --skip-badvars > a.bt
 
 ## Developement
 

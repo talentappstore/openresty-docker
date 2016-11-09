@@ -1,11 +1,16 @@
-FROM ubuntu:xenial-20160923.1
+FROM ubuntu:xenial
 
 ENV OPENRESTY_VERSION 1.11.2.1
+ENV PATH $PATH:/opt/stapxx-master:/opt/stapxx-master/samples:/opt/FlameGraph-master
+ENV DEBIAN_FRONTEND noniteractive
 
 RUN apt-get update && \
     apt-get -y --no-install-recommends install \
         ca-certificates \
         curl \
+        systemtap \
+        gcc \
+        unzip \
         libreadline-dev \
         libncurses5-dev \
         libpcre3-dev \
@@ -13,7 +18,13 @@ RUN apt-get update && \
         make \
         zlib1g-dev \
         libssl-dev \
+        elfutils \
         build-essential && \
+    curl -OL https://github.com/openresty/stapxx/archive/master.zip && \
+    curl -o FlameGraph.zip -L https://github.com/brendangregg/FlameGraph/archive/master.zip && \
+    unzip master.zip -d /opt && \
+    unzip FlameGraph.zip -d /opt && \
+    rm master.zip && \
     curl -O https://openresty.org/download/openresty-${OPENRESTY_VERSION}.tar.gz && \
     curl -O https://openresty.org/download/openresty-${OPENRESTY_VERSION}.tar.gz.asc && \
     gpg --keyserver keys.gnupg.net --recv-key A0E98066 && \
