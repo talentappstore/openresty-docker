@@ -1,7 +1,7 @@
 FROM ubuntu:xenial
 
-ENV OPENRESTY_VERSION 1.11.2.1
-ENV PATH $PATH:/opt/stapxx-master:/opt/stapxx-master/samples:/opt/FlameGraph-master
+ENV OPENRESTY_VERSION 1.11.2.2
+ENV PATH $PATH:/opt/stapxx-master:/opt/stapxx-master/samples:/opt/FlameGraph-master:/opt/openresty-systemtap-toolkit-master
 ENV DEBIAN_FRONTEND noniteractive
 
 RUN apt-get update && \
@@ -22,8 +22,10 @@ RUN apt-get update && \
         build-essential && \
     curl -OL https://github.com/openresty/stapxx/archive/master.zip && \
     curl -o FlameGraph.zip -L https://github.com/brendangregg/FlameGraph/archive/master.zip && \
+    curl -o openresty-systemtap-toolkit.zip -L https://github.com/openresty/openresty-systemtap-toolkit/archive/master.zip && \
     unzip master.zip -d /opt && \
     unzip FlameGraph.zip -d /opt && \
+    unzip openresty-systemtap-toolkit.zip -d /opt && \
     rm master.zip && \
     curl -O https://openresty.org/download/openresty-${OPENRESTY_VERSION}.tar.gz && \
     curl -O https://openresty.org/download/openresty-${OPENRESTY_VERSION}.tar.gz.asc && \
@@ -45,7 +47,8 @@ RUN apt-get update && \
     mkdir -p /srv/nginx/logs && \
     ln -s /usr/local/openresty/nginx/sbin/nginx /usr/local/bin && \
     ln -sf /dev/stdout /srv/nginx/logs/access.log && \
-    ln -sf /dev/stderr /srv/nginx/logs/error.log
+    ln -sf /dev/stderr /srv/nginx/logs/error.log && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /srv
 
